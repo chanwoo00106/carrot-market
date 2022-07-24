@@ -1,8 +1,5 @@
 import { useState } from "react";
-
-const cls = (...classnames: string[]) => {
-  return classnames.join(" ");
-};
+import { cls } from "../libs";
 
 export default function Enter() {
   const [method, setMethod] = useState<"email" | "phone">("email");

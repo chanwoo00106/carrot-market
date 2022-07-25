@@ -13,7 +13,7 @@ const Profile: NextPage = () => {
           </div>
         </div>
         <div className="mt-10 flex justify-around">
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center cursor-pointer">
             <div className="w-14 h-14 text-white bg-orange-500 rounded-full flex items-center justify-center">
               <svg
                 className="w-6 h-6"
@@ -34,7 +34,7 @@ const Profile: NextPage = () => {
               판매내역
             </span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center cursor-pointer">
             <div className="w-14 h-14 text-white bg-orange-500 rounded-full flex items-center justify-center">
               <svg
                 className="w-6 h-6"
@@ -55,7 +55,7 @@ const Profile: NextPage = () => {
               구매내역
             </span>
           </div>
-          <div className="flex flex-col items-center">
+          <div className="flex flex-col items-center cursor-pointer">
             <div className="w-14 h-14 text-white bg-orange-500 rounded-full flex items-center justify-center">
               <svg
                 className="w-6 h-6"

@@ -4,11 +4,11 @@ import Layout from "../../components/layout";
 const Chats: NextPage = () => {
   return (
     <Layout title="채팅" hasTabBar>
-      <div className="py-10">
+      <div className="px-4">
         {[1, 1, 1, 1, 1, 1, 1].map((_, i) => (
           <div
             key={i}
-            className="flex px-4 cursor-pointer last:border-b-0 py-3 border-b items-center space-x-3"
+            className="flex cursor-pointer last:border-b-0 py-3 border-b items-center space-x-3"
           >
             <div className="w-12 h-12 rounded-full bg-slate-300" />
             <div>

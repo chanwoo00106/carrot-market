@@ -26,7 +26,7 @@ const Layout: NextPage<LayoutProps> = ({
       <div
         className={cls(
           !canGoBack && "justify-center",
-          "bg-white w-full text-lg font-medium py-3 px-5 fixed text-gray-800 border-b top-0 flex items-center"
+          "bg-white w-full max-w-lg text-lg font-medium py-3 px-5 fixed text-gray-800 border-b top-0 flex items-center"
         )}
       >
         {canGoBack && (

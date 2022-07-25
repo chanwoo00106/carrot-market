@@ -4,7 +4,7 @@ import Layout from "../../components/layout";
 const Community: NextPage = () => {
   return (
     <Layout title="동내생활" hasTabBar>
-      <div className="py-16 px-4 space-y-8">
+      <div className="px-4 space-y-8">
         {[1, 2, 3, 4, 5].map((i) => (
           <div key={i} className="flex flex-col items-start">
             <span className="flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">

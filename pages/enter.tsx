@@ -1,10 +1,28 @@
 import { useState } from "react";
+import { useForm } from "react-hook-form";
 import { cls } from "../libs";
 
+interface EnterForm {
+  email?: string;
+  phone?: string;
+}
+
 export default function Enter() {
+  const { register, reset, handleSubmit } = useForm<EnterForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
-  const onEmailClick = () => setMethod("email");
-  const onPhoneClick = () => setMethod("phone");
+  const onEmailClick = () => {
+    reset();
+    setMethod("email");
+  };
+  const onPhoneClick = () => {
+    reset();
+    setMethod("phone");
+  };
+
+  const onValid = (data: EnterForm) => {
+    console.log(data);
+  };
+
   return (
     <div className="mt-16 px-4">
       <h3 className="text-3x font-bold text-center">Enter to Carrot</h3>
@@ -36,7 +54,7 @@ export default function Enter() {
             </button>
           </div>
         </div>
-        <form className="flex flex-col mt-8">
+        <form onSubmit={handleSubmit(onValid)} className="flex flex-col mt-8">
           <label htmlFor="input" className="text-sm font-medium text-gray-700">
             {method === "email" ? "Email address" : null}
             {method === "phone" ? "Phone number" : null}
@@ -44,6 +62,7 @@ export default function Enter() {
           <div className="mt-1">
             {method === "email" ? (
               <input
+                {...register("email", { required: true })}
                 id="input"
                 type="email"
                 className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
@@ -56,6 +75,7 @@ export default function Enter() {
                   +82
                 </span>
                 <input
+                  {...register("email", { required: true })}
                   id="input"
                   type="number"
                   className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md rounded-l-none shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"

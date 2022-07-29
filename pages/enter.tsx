@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { cls } from "../libs";
+import api from "../libs/api";
 
 interface EnterForm {
   email?: string;
@@ -19,8 +20,10 @@ export default function Enter() {
     setMethod("phone");
   };
 
-  const onValid = (data: EnterForm) => {
-    console.log(data);
+  const onValid = async (data: EnterForm) => {
+    try {
+      await api.post("/api/users/enter", data);
+    } catch (e) {}
   };
 
   return (

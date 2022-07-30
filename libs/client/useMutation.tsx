@@ -1,8 +1,9 @@
+import axios from "axios";
 import { useState } from "react";
 
 type MutationType<T> = [
-  (data?: any) => void,
-  { loading: boolean; data: undefined | T; error: undefined | any }
+  (data?: any) => Promise<void>,
+  { loading: boolean; data?: T; error?: any }
 ];
 
 export function useMutation<T>(url: string): MutationType<T> {
@@ -10,7 +11,15 @@ export function useMutation<T>(url: string): MutationType<T> {
   const [data, setData] = useState<undefined | T>(undefined);
   const [error, setError] = useState<undefined | any>(undefined);
 
-  const mutation = (data: any) => {};
+  const mutation = async (data: any) => {
+    setLoading(true);
+    try {
+      setData((await axios.post(url, data)).data);
+    } catch (e) {
+      setError(e);
+    }
+    setLoading(false);
+  };
 
   return [mutation, { loading, data, error }];
 }

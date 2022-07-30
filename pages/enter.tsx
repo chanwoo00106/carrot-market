@@ -20,9 +20,9 @@ export default function Enter() {
     setMethod("phone");
   };
 
-  const onValid = async (data: EnterForm) => {
-    enter(data);
-  };
+  const onValid = (data: EnterForm) => enter(data);
+
+  console.log(loading, data, error);
 
   return (
     <div className="mt-16 px-4">

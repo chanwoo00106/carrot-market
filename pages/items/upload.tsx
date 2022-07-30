@@ -1,6 +1,6 @@
 import type { NextPage } from "next";
-import Button from "../../components/Button";
-import Layout from "../../components/layout";
+import Button from "@components/Button";
+import Layout from "@components/layout";
 
 const Upload: NextPage = () => {
   return (

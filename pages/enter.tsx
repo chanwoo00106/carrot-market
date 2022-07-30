@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { cls } from "../libs";
-import api from "../libs/api";
+import { cls, useMutation } from "../libs";
 
 interface EnterForm {
   email?: string;
@@ -9,6 +8,7 @@ interface EnterForm {
 }
 
 export default function Enter() {
+  const [enter, { loading, data, error }] = useMutation("/api/users/enter");
   const { register, reset, handleSubmit } = useForm<EnterForm>();
   const [method, setMethod] = useState<"email" | "phone">("email");
   const onEmailClick = () => {
@@ -21,9 +21,7 @@ export default function Enter() {
   };
 
   const onValid = async (data: EnterForm) => {
-    try {
-      await api.post("/api/users/enter", data);
-    } catch (e) {}
+    enter(data);
   };
 
   return (

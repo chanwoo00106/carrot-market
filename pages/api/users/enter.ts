@@ -1,24 +1,21 @@
 import type { NextApiRequest, NextApiResponse } from "next";
-import withHandler from "@libs/server/withHandler";
+import withHandler, { ResponseType } from "@libs/server/withHandler";
 import client from "@libs/server/client";
 
-async function saveOrFindUser(email: string, phone: number) {
-  return client.user.upsert({
-    where: { ...(email ? { email } : { phone }) },
-    create: { name: "Anonymous", ...(email ? { email } : { phone }) },
-    update: {},
-  });
-}
-
-async function handler(req: NextApiRequest, res: NextApiResponse) {
+async function handler(
+  req: NextApiRequest,
+  res: NextApiResponse<ResponseType>
+) {
   const data = req.body;
 
   if (!data.email && !data.phone)
-    return res.status(400).json({ message: "BadRequest" });
+    return res.status(400).json({ ok: false, message: "BadRequest" });
+
+  const payload = Math.floor(100000 + Math.random() * 900000) + "";
 
   const token = await client.token.create({
     data: {
-      payload: "1234",
+      payload,
       user: {
         connectOrCreate: {
           where: { ...data },
@@ -28,7 +25,7 @@ async function handler(req: NextApiRequest, res: NextApiResponse) {
     },
   });
 
-  return res.json({});
+  return res.json({ ok: true });
 }
 
 export default withHandler("POST", handler);

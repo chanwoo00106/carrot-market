@@ -11,13 +11,24 @@ async function saveOrFindUser(email: string, phone: number) {
 }
 
 async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const { email, phone } = req.body;
+  const data = req.body;
 
-  if (!email && !phone) return res.status(400).json({ message: "BadRequest" });
+  if (!data.email && !data.phone)
+    return res.status(400).json({ message: "BadRequest" });
 
-  const user = await saveOrFindUser(email, +phone);
+  const token = await client.token.create({
+    data: {
+      payload: "1234",
+      user: {
+        connectOrCreate: {
+          where: { ...data },
+          create: { name: "Anonymous", ...data },
+        },
+      },
+    },
+  });
 
-  return res.json(user);
+  return res.json({});
 }
 
 export default withHandler("POST", handler);

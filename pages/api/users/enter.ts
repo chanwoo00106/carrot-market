@@ -16,27 +16,27 @@ async function handler(
 
   const payload = Math.floor(100000 + Math.random() * 900000) + "";
 
-  const token = await client.token.create({
+  await client.token.create({
     data: {
       payload,
       user: {
         connectOrCreate: {
-          where: { ...(email ? { email } : { phone: +phone }) },
+          where: { ...(email ? { email } : { phone }) },
           create: {
             name: "Anonymous",
-            ...(email ? { email } : { phone: +phone }),
+            ...(email ? { email } : { phone }),
           },
         },
       },
     },
   });
 
-  if (phone)
-    await twilioClient.messages.create({
-      messagingServiceSid: process.env.TWILIO_MSID,
-      to: process.env.MY_PHONE!,
-      body: `Your login token is ${payload}.`,
-    });
+  // if (phone)
+  //   await twilioClient.messages.create({
+  //     messagingServiceSid: process.env.TWILIO_MSID,
+  //     to: process.env.MY_PHONE!,
+  //     body: `Your login token is ${payload}.`,
+  //   });
 
   return res.json({ ok: true });
 }

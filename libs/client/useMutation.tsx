@@ -6,7 +6,7 @@ type MutationType<T> = [
   { loading: boolean; data?: T; error?: any }
 ];
 
-export function useMutation<T>(url: string): MutationType<T> {
+export function useMutation<T = any>(url: string): MutationType<T> {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<undefined | T>(undefined);
   const [error, setError] = useState<undefined | any>(undefined);

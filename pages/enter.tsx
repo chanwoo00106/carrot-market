@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { cls, useMutation } from "@libs/index";
+import { useRouter } from "next/router";
 
 interface EnterForm {
   email?: string;
@@ -16,6 +17,7 @@ interface MutationResult {
 }
 
 export default function Enter() {
+  const router = useRouter();
   const [enter, { loading, data, error }] =
     useMutation<MutationResult>("/api/users/enter");
   const [
@@ -46,6 +48,11 @@ export default function Enter() {
     if (tokenLoading) return;
     confirmToken(data);
   };
+
+  useEffect(() => {
+    console.log("hi");
+    if (tokenData?.ok) router.push("/");
+  }, [tokenData, router]);
 
   return (
     <div className="mt-16 px-4">

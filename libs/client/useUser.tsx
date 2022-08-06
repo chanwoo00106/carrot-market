@@ -1,6 +1,5 @@
-import axios from "axios";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import useSWR from "swr";
 
 export type User = {
@@ -13,10 +12,20 @@ export type User = {
   updateAt: Date;
 };
 
-const fetcher = async (url: string) => (await axios.get(url)).data;
+interface useUserType {
+  user: User;
+  isLoading: boolean;
+}
 
-export default function useUser() {
-  const { data, error } = useSWR("/api/users/me", fetcher);
+export default function useUser(): useUserType {
+  const { data, error } = useSWR("/api/users/me");
   const router = useRouter();
-  return data;
+
+  useEffect(() => {
+    if (data && !data.ok) {
+      router.replace("/enter");
+    }
+  }, [data, router]);
+
+  return { user: data?.profile, isLoading: !data && !error };
 }

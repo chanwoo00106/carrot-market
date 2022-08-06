@@ -3,8 +3,8 @@ import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 
 const Home: NextPage = () => {
-  const user = useUser();
-  console.log(user);
+  const { user, isLoading } = useUser();
+  console.log(user, isLoading);
 
   return (
     <Layout title="홈" hasTabBar>

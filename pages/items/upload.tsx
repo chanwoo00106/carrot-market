@@ -1,11 +1,27 @@
 import type { NextPage } from "next";
 import Button from "@components/Button";
 import Layout from "@components/layout";
+import { useForm } from "react-hook-form";
+import { useMutation } from "@libs/";
+
+interface UploadProductForm {
+  name: string;
+  price: string;
+  description: string;
+}
 
 const Upload: NextPage = () => {
+  const { register, handleSubmit } = useForm<UploadProductForm>();
+  const [uploadProduct, { loading, data }] = useMutation("/api/products");
+
+  const onValid = async (data: UploadProductForm) => {
+    if (loading) return;
+    console.log(data);
+  };
+
   return (
-    <Layout canGoBack>
-      <div className="space-y-5 px-4 py-16">
+    <Layout canGoBack title="Upload Product">
+      <form onSubmit={handleSubmit(onValid)} className="space-y-5 px-4 py-16">
         <div>
           <label className="w-full cursor-pointer text-gray-600 hover:text-orange-500 hover:border-orange-500 flex items-center justify-center border-2 border-dashed border-gray-300 py-6 h-48 rounded-md">
             <svg
@@ -35,9 +51,9 @@ const Upload: NextPage = () => {
           <div className="rounded-md relative flex  items-center shadow-sm">
             <input
               id="name"
-              type="email"
+              type="text"
               className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-              required
+              {...register("name", { required: true })}
             />
           </div>
         </div>
@@ -57,6 +73,7 @@ const Upload: NextPage = () => {
               id="price"
               type="text"
               placeholder="0.00"
+              {...register("price", { required: true })}
             />
             <div className="absolute right-0 pointer-events-none pr-3 flex items-centerj">
               <span className="text-gray-500">USD</span>
@@ -70,10 +87,11 @@ const Upload: NextPage = () => {
           <textarea
             className="mt-1 shadow-sm w-full focus:ring-orange-500 rounded-md border-gray-300 focus:border-orange-500"
             rows={4}
+            {...register("description")}
           />
         </div>
-        <Button>Upload product</Button>
-      </div>
+        <Button>{loading ? "Loading..." : "Upload product"}</Button>
+      </form>
     </Layout>
   );
 };

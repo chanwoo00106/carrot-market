@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
+import useSWR from "swr";
 
 export type User = {
   id: number;
@@ -12,15 +13,10 @@ export type User = {
   updateAt: Date;
 };
 
-export default function useUser() {
-  const [user, setUser] = useState<User | undefined>();
-  const router = useRouter();
-  useEffect(() => {
-    axios.get("/api/users/me").then((res) => {
-      if (!res.data.ok) router.push("/enter");
+const fetcher = async (url: string) => (await axios.get(url)).data;
 
-      setUser(res.data.profile);
-    });
-  }, [router]);
-  return user;
+export default function useUser() {
+  const { data, error } = useSWR("/api/users/me", fetcher);
+  const router = useRouter();
+  return data;
 }

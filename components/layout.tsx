@@ -26,7 +26,7 @@ const Layout: NextPage<LayoutProps> = ({
       <div
         className={cls(
           !canGoBack && "justify-center",
-          "bg-white w-full max-w-lg text-lg font-medium py-3 px-5 fixed text-gray-800 border-b top-0 flex items-center"
+          "bg-white w-full max-w-lg text-lg font-medium py-3 px-5 fixed text-gray-800 border-b top-0 flex justify-between items-center"
         )}
       >
         {canGoBack && (
@@ -48,6 +48,7 @@ const Layout: NextPage<LayoutProps> = ({
           </button>
         )}
         {title && <span>{title}</span>}
+        <div />
       </div>
       <div className={cls("pt-20", hasTabBar && "pb-24")}>{children}</div>
       {hasTabBar && (

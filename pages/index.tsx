@@ -2,27 +2,36 @@ import type { NextPage } from "next";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import Link from "next/link";
+import useSWR from "swr";
+import { Product } from "@prisma/client";
+
+interface ProductsResponse {
+  ok: boolean;
+  products: Product[];
+}
 
 const Home: NextPage = () => {
   const { user, isLoading } = useUser();
-  console.log(user, isLoading);
+  const { data } = useSWR<ProductsResponse>("/api/products");
+  console.log(data);
 
   return (
     <Layout title="홈" hasTabBar>
       <div className="flex flex-col space-y-5">
-        {[1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1].map((_, i) => (
+        {data?.products?.map((product) => (
           <div
-            key={i}
+            key={product.id}
             className="flex px-4 border-b last:border-0 pb-4 cursor-pointer justify-between"
           >
             <div className="flex space-x-4">
               <div className="w-20 h-20 bg-gray-400 rounded-md" />
               <div className="pt-2 flex flex-col">
                 <h3 className="text-sm font-medium text-gray-900">
-                  New iPhone 14
+                  {product.name}
                 </h3>
-                <span className="text-xs text-gray-500">Black</span>
-                <span className="font-medium mt-1 text-gray-900">$95</span>
+                <span className="font-medium text-sm mt-1 text-gray-900">
+                  ${product.price}
+                </span>
               </div>
             </div>
             <div className="flex items-end justify-end space-x-2">

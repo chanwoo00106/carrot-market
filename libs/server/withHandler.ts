@@ -1,7 +1,9 @@
 import { NextApiRequest, NextApiResponse } from "next";
 
+type Method = "GET" | "POST" | "DELETE";
+
 interface ConfigType {
-  method: "GET" | "POST" | "DELETE";
+  methods: Method[];
   handler: (
     req: NextApiRequest,
     res: NextApiResponse<ResponseType>
@@ -10,12 +12,13 @@ interface ConfigType {
 }
 
 export default function withHandler({
-  method,
+  methods,
   handler,
   isPrivate = true,
 }: ConfigType) {
   return async (req: NextApiRequest, res: NextApiResponse) => {
-    if (req.method !== method) return res.status(405).end();
+    if (req.method && !methods.includes(req.method as Method))
+      return res.status(405).end();
     if (isPrivate && !req.session.user)
       return res.status(401).json({ ok: false });
 

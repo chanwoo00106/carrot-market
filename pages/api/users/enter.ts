@@ -14,7 +14,8 @@ async function handler(
   if (!email && !phone)
     return res.status(400).json({ ok: false, message: "BadRequest" });
 
-  const payload = Math.floor(100000 + Math.random() * 900000) + "";
+  // const payload = Math.floor(100000 + Math.random() * 900000) + "";
+  const payload = 123456 + "";
 
   await client.token.create({
     data: {

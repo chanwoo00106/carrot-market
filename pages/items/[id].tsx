@@ -3,7 +3,7 @@ import type { NextPage } from "next";
 import Layout from "@components/layout";
 import { useRouter } from "next/router";
 import useSWR from "swr";
-import { Fav, Product } from "@prisma/client";
+import { Product } from "@prisma/client";
 import Link from "next/link";
 import { cls, useMutation } from "@libs/index";
 
@@ -24,7 +24,7 @@ interface ItemDetailResponse {
 
 const ItemDetail: NextPage = () => {
   const router = useRouter();
-  const { data } = useSWR<ItemDetailResponse>(
+  const { data, mutate } = useSWR<ItemDetailResponse>(
     router.query.id && `/api/products/${router.query.id}`
   );
 
@@ -32,6 +32,8 @@ const ItemDetail: NextPage = () => {
 
   const onFavClick = async () => {
     await toggleFav();
+    if (!data) return;
+    mutate({ ...data, isLiked: !data?.isLiked }, false);
   };
 
   return (

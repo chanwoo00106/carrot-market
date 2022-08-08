@@ -5,15 +5,20 @@ import Link from "next/link";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 
+interface ProductType extends Product {
+  _count: {
+    favs: number;
+  };
+}
+
 interface ProductsResponse {
   ok: boolean;
-  products: Product[];
+  products: ProductType[];
 }
 
 const Home: NextPage = () => {
-  const { user, isLoading } = useUser();
+  const {} = useUser();
   const { data } = useSWR<ProductsResponse>("/api/products");
-  console.log(data);
 
   return (
     <Layout title="홈" hasTabBar>
@@ -49,7 +54,7 @@ const Home: NextPage = () => {
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                       ></path>
                     </svg>
-                    <span>1</span>
+                    <span>{product._count.favs}</span>
                   </div>
                   <div className="flex space-x-0.5 items-center text-sm text-gray-600">
                     <svg

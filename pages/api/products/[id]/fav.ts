@@ -22,12 +22,14 @@ async function handler(
   if (!id || !+id) return res.status(400).json({ ok: false });
 
   const alreadyExists = await client.fav.findFirst({
-    where: { productId: +id.toString() },
+    where: { productId: +id.toString(), userId: user?.id },
   });
 
-  if (alreadyExists) {
-    await client.fav.delete({ where: { id: alreadyExists.id } });
-  } else
+  if (alreadyExists)
+    await client.fav.delete({
+      where: { id: alreadyExists.id },
+    });
+  else
     await client.fav.create({
       data: {
         user: {

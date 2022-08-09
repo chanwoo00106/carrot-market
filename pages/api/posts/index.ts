@@ -20,16 +20,28 @@ async function handler(
     session: { user },
   } = req;
 
-  const post = await client.post.create({
-    data: {
-      question: body.question,
-      user: {
-        connect: { id: user?.id },
+  if (req.method === "POST") {
+    const post = await client.post.create({
+      data: {
+        question: body.question,
+        user: {
+          connect: { id: user?.id },
+        },
       },
-    },
-  });
+    });
 
-  return res.status(200).json({ ok: true, post });
+    return res.status(200).json({ ok: true, post });
+  } else {
+    const posts = await client.post.findMany({
+      include: {
+        user: true,
+        _count: { select: { answer: true, wondering: true } },
+      },
+    });
+    return res.status(200).json({ ok: true, posts });
+  }
 }
 
-export default withApiSession(withHandler({ methods: ["POST"], handler }));
+export default withApiSession(
+  withHandler({ methods: ["GET", "POST"], handler })
+);

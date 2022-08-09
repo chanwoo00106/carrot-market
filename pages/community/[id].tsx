@@ -38,7 +38,7 @@ interface AnswerResponse {
 const CommunityPostDetail: NextPage = () => {
   const router = useRouter();
   const { register, handleSubmit, reset } = useForm<AnswerForm>();
-  const { data, error, mutate } = useSWR<PostDetailResponse>(
+  const { data, mutate } = useSWR<PostDetailResponse>(
     router.query.id ? `/api/posts/${router.query.id}` : null
   );
   const [wonder, { loading }] = useMutation(
@@ -71,8 +71,9 @@ const CommunityPostDetail: NextPage = () => {
   useEffect(() => {
     if (answerData && answerData.ok) {
       reset();
+      mutate();
     }
-  }, [answerData, reset]);
+  }, [answerData, reset, mutate]);
 
   return (
     <Layout canGoBack>
@@ -149,8 +150,8 @@ const CommunityPostDetail: NextPage = () => {
                 <span className="text-sm block font-medium text-gray-700">
                   {answer.user.name}
                 </span>
-                <span className="text-xs text-gray-500 block ">
-                  {/* {answer.createAt.toString()} */}
+                <span className="text-xs text-gray-500 block">
+                  {answer.createAt}
                 </span>
                 <p className="text-gray-700 mt-2">{answer.answer}</p>
               </div>

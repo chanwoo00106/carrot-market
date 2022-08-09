@@ -35,7 +35,11 @@ async function handler(
         },
       },
       answer: {
-        select: { user: { select: { id: true, name: true, avatar: true } } },
+        select: {
+          user: { select: { id: true, name: true, avatar: true } },
+          answer: true,
+          id: true,
+        },
       },
       _count: {
         select: { answer: true, wondering: true },

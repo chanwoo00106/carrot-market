@@ -51,7 +51,7 @@ async function handler(
       where: {
         latitude: {
           gte: parsedLatitude - 0.01,
-          lte: parsedLatitude - 0.01,
+          lte: parsedLatitude + 0.01,
         },
         longitude: {
           gte: parsedLongitude - 0.01,

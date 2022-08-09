@@ -96,7 +96,7 @@ const CommunityPostDetail: NextPage = () => {
         </div>
         <div>
           <div className="mt-2 px-4 text-gray-700">
-            <span className="text-orange-500 font-medium">Q.</span>
+            <span className="text-orange-500 font-medium">Q.</span>{" "}
             {data?.post?.question}
           </div>
           <div className="flex px-4 space-x-5 mt-3 text-gray-700 py-2.5 border-t border-b-[2px]  w-full">
@@ -151,7 +151,7 @@ const CommunityPostDetail: NextPage = () => {
                   {answer.user.name}
                 </span>
                 <span className="text-xs text-gray-500 block">
-                  {answer.createAt}
+                  {/* {answer.createAt} */}
                 </span>
                 <p className="text-gray-700 mt-2">{answer.answer}</p>
               </div>

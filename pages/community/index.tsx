@@ -19,7 +19,6 @@ interface PostsResponse {
 
 const Community: NextPage = () => {
   const { data } = useSWR<PostsResponse>("/api/posts");
-  console.log(data);
 
   return (
     <Layout title="동내생활" hasTabBar>
@@ -37,7 +36,7 @@ const Community: NextPage = () => {
                 </div>
                 <div className="mt-5 flex items-center justify-between w-full text-gray-500 font-xs">
                   <span>{post.user.name}</span>
-                  <span>{post.createAt}</span>
+                  {/* <span>{post.createAt}</span> */}
                 </div>
                 <div className="flex space-x-5 mt-3 text-gray-700 py-2.5 border-t border-b-[2px] w-full">
                   <span className="flex space-x-2 items-center text-sm">

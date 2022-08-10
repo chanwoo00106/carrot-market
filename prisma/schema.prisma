@@ -26,6 +26,11 @@ model User {
   posts      Post[]
   answers    Answer[]
   wonderings Wondering[]
+  writtenReviews Review[] @relation(name: "writtenReviews")
+  receivedReviews Review[] @relation(name: "receivedReviews")
+  sales Sale[]
+  purchases Purchase[]
+  records Recorde[]
 }
 
 model Token {
@@ -48,6 +53,9 @@ model Product {
   price       Int
   description String   @db.MediumText
   favs        Fav[]
+  sales Sale[]
+  purchases Purchase[]
+  records Recorde[]
 }
 
 model Fav {
@@ -92,4 +100,52 @@ model Wondering {
   userId   Int
   post     Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
   postId   Int
+}
+
+model Review {
+  id       Int      @id @default(autoincrement())
+  createAt DateTime @default(now())
+  updateAt DateTime @updatedAt
+  review String @db.MediumText
+  createBy User @relation(name: "writtenReviews", fields: [createById], references: [id], onDelete: Cascade)
+  createById Int
+  createFor User @relation(name: "receivedReviews", fields: [createForId], references: [id], onDelete: Cascade)
+  createForId Int
+}
+
+model Sale {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int
+  productId Int
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Purchase {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int
+  productId Int
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+model Recorde {
+  id        Int      @id @default(autoincrement())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  userId    Int
+  productId Int
+  kind      Kind
+  createAt  DateTime @default(now())
+  updateAt  DateTime @updatedAt
+}
+
+enum Kind {
+Purchase
+Sale
+Fav
 }

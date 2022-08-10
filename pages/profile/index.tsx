@@ -7,7 +7,7 @@ import { Review, User } from "@prisma/client";
 import { cls } from "@libs/index";
 
 interface ReviewWithUser extends Review {
-  createdBy: User;
+  createBy: User;
 }
 
 interface ReviewsResponse {
@@ -18,6 +18,7 @@ interface ReviewsResponse {
 const Profile: NextPage = () => {
   const { user } = useUser();
   const { data } = useSWR<ReviewsResponse>("/api/reviews");
+  console.log(data);
 
   return (
     <Layout title="나의 캐럿" hasTabBar>
@@ -111,7 +112,7 @@ const Profile: NextPage = () => {
               <div className="w-12 h-12 rounded-full bg-slate-400" />
               <div>
                 <h4 className="text-sm font-bold text-gray-900">
-                  {review?.createdBy?.name}
+                  {review?.createBy?.name}
                 </h4>
                 <div className="flex items-center">
                   {[...Array(5)].map((_, star) => (
@@ -135,14 +136,7 @@ const Profile: NextPage = () => {
               </div>
             </div>
             <div className="mt-4 text-gray-600 text-sm">
-              <p>
-                Normally, both your asses would be dead as fucking fried
-                chicken, but you happen to pull this shit while I&apos;m in a
-                transitional period so I don&apos;t wanna kill you, I wanna help
-                you. But I can&apos;t give you this case, it don&apos;t belong
-                to me. Besides, I&apos;ve already been through too much shit
-                this morning over this case to hand it over to your dumb ass.
-              </p>
+              <p>{review.review}</p>
             </div>
           </div>
         ))}

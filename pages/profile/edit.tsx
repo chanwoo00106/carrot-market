@@ -3,8 +3,10 @@ import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import { useForm } from "react-hook-form";
 import { useEffect } from "react";
+import { useMutation } from "@libs/index";
 
 interface EditProfileForm {
+  name?: string;
   email?: string;
   phone?: string;
   formErrors?: string;
@@ -19,18 +21,28 @@ const EditProfile: NextPage = () => {
     setError,
     formState: { errors },
   } = useForm<EditProfileForm>();
+  const [editProfile, { data, loading }] = useMutation(`/api/users/me`);
 
   useEffect(() => {
     setValue("email", user?.email || "");
     setValue("phone", user?.phone || "");
+    setValue("name", user?.name || "");
   }, [user, setValue]);
 
-  const onValid = (data: EditProfileForm) => {
-    if (!data.email && !data.phone)
-      setError("formErrors", {
+  const onValid = ({ name, email, phone }: EditProfileForm) => {
+    if (loading) return;
+    if (!email && !phone)
+      return setError("formErrors", {
         message: "Email OR Phone number are required. You need to choose one.",
       });
+
+    editProfile({ name, email, phone });
   };
+
+  useEffect(() => {
+    if (data && !data.ok && data.error)
+      setError("formErrors", { message: data.error });
+  }, [data, setError]);
 
   return (
     <Layout canGoBack>
@@ -49,6 +61,17 @@ const EditProfile: NextPage = () => {
               accept="image/*"
             />
           </label>
+        </div>
+        <div className="space-y-1">
+          <label htmlFor="name" className="text-sm font-medium text-gray-700">
+            name
+          </label>
+          <input
+            {...register("name", { required: false })}
+            id="name"
+            type="text"
+            className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
+          />
         </div>
         <div className="space-y-1">
           <label htmlFor="email" className="text-sm font-medium text-gray-700">
@@ -81,7 +104,7 @@ const EditProfile: NextPage = () => {
           {errors.formErrors?.message || null}
         </span>
         <button className="mt-6 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 border-transparent rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 focus:outline-none">
-          Update Profile
+          {loading ? "Loading..." : "Update Profile"}
         </button>
       </form>
     </Layout>

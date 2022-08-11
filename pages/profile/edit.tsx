@@ -1,10 +1,40 @@
 import { NextPage } from "next";
 import Layout from "@components/layout";
+import useUser from "@libs/client/useUser";
+import { useForm } from "react-hook-form";
+import { useEffect } from "react";
+
+interface EditProfileForm {
+  email?: string;
+  phone?: string;
+  formErrors?: string;
+}
 
 const EditProfile: NextPage = () => {
+  const { user } = useUser();
+  const {
+    register,
+    setValue,
+    handleSubmit,
+    setError,
+    formState: { errors },
+  } = useForm<EditProfileForm>();
+
+  useEffect(() => {
+    setValue("email", user?.email || "");
+    setValue("phone", user?.phone || "");
+  }, [user, setValue]);
+
+  const onValid = (data: EditProfileForm) => {
+    if (!data.email && !data.phone)
+      setError("formErrors", {
+        message: "Email OR Phone number are required. You need to choose one.",
+      });
+  };
+
   return (
     <Layout canGoBack>
-      <div className="py-10 px-4 space-y-4">
+      <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
         <div className="flex items-center space-x-3">
           <div className="w-14 h-14 rounded-full bg-slate-500" />
           <label
@@ -25,10 +55,10 @@ const EditProfile: NextPage = () => {
             Email address
           </label>
           <input
+            {...register("email", { required: false })}
             id="email"
             type="email"
             className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-            required
           />
         </div>
         <div className="space-y-1">
@@ -40,17 +70,20 @@ const EditProfile: NextPage = () => {
               +82
             </span>
             <input
+              {...register("phone", { required: false })}
               id="input"
               type="number"
               className="appearance-none w-full px-3 py-2 border border-gray-300 rounded-md rounded-l-none shadow-sm placeholder-gray-400 focus:outline-none focus:ring-orange-500 focus:border-orange-500"
-              required
             />
           </div>
         </div>
+        <span className="my-2 text-red-500 font-medium text-center block">
+          {errors.formErrors?.message || null}
+        </span>
         <button className="mt-6 w-full bg-orange-500 hover:bg-orange-600 text-white py-2 px-4 border-transparent rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 focus:outline-none">
           Update Profile
         </button>
-      </div>
+      </form>
     </Layout>
   );
 };

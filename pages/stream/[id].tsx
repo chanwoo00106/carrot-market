@@ -2,6 +2,7 @@ import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import { cls, useMutation } from "@libs/index";
 import { Stream } from "@prisma/client";
+import produce from "immer";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
@@ -12,7 +13,7 @@ interface StreamMessage {
   id: number;
   message: string;
   user: {
-    avatar?: string;
+    avatar?: string | null;
     id: number;
   };
 }
@@ -35,7 +36,8 @@ const StreamDetail: NextPage = () => {
   const { user } = useUser();
   const { register, handleSubmit, reset } = useForm<MessageForm>();
   const { data, mutate } = useSWR<StreamResponse>(
-    router.query.id ? `/api/streams/${router.query.id}` : null
+    router.query.id ? `/api/streams/${router.query.id}` : null,
+    { refreshInterval: 1000 }
   );
   const [sendMessage, { loading, data: sendMessageData }] = useMutation(
     `/api/streams/${router.query.id}/messages`
@@ -44,14 +46,18 @@ const StreamDetail: NextPage = () => {
   const onValid = async (form: MessageForm) => {
     if (loading) return;
     reset();
+    mutate(
+      produce(data, (draft) => {
+        draft?.stream.messages.push({
+          id: Date.now(),
+          message: form.message,
+          user: { id: user.id, avatar: user.avatar },
+        });
+      }),
+      false
+    );
     await sendMessage(form);
   };
-
-  useEffect(() => {
-    if (sendMessageData && sendMessageData.ok) {
-      mutate();
-    }
-  }, [sendMessageData, mutate]);
 
   return (
     <Layout canGoBack>

@@ -4,7 +4,6 @@ import useUser from "@libs/client/useUser";
 import { useForm } from "react-hook-form";
 import { useEffect, useState } from "react";
 import { cls, useMutation } from "@libs/index";
-import { randomInt } from "crypto";
 
 interface EditProfileForm {
   name?: string;
@@ -33,14 +32,19 @@ const EditProfile: NextPage = () => {
     setValue("name", user?.name || "");
   }, [user, setValue]);
 
-  const onValid = ({ name, email, phone, avatar }: EditProfileForm) => {
+  const onValid = async ({ name, email, phone, avatar }: EditProfileForm) => {
     if (loading) return;
     if (!email && !phone)
       return setError("formErrors", {
         message: "Email OR Phone number are required. You need to choose one.",
       });
 
-    editProfile({ name, email, phone, avatar });
+    if (!avatar || !avatar.length) {
+      editProfile({ name, email, phone });
+      return;
+    }
+
+    editProfile({ name, email, phone, avatarUrl: "" });
   };
 
   useEffect(() => {

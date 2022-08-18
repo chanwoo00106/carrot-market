@@ -6,10 +6,7 @@ type MutationType<T> = [
   { loading: boolean; data?: T; error?: any }
 ];
 
-export function useMutation<T = any>(
-  url: string,
-  isImg?: boolean
-): MutationType<T> {
+export function useMutation<T = any>(url: string): MutationType<T> {
   const [loading, setLoading] = useState<boolean>(false);
   const [data, setData] = useState<undefined | T>(undefined);
   const [error, setError] = useState<undefined | any>(undefined);
@@ -17,17 +14,7 @@ export function useMutation<T = any>(
   const mutation = async (data: any) => {
     setLoading(true);
     try {
-      setData(
-        (
-          await axios.post(url, data, {
-            headers: {
-              "Content-Type": isImg
-                ? "multipart/form-data"
-                : "application/json",
-            },
-          })
-        ).data
-      );
+      setData((await axios.post(url, data)).data);
     } catch (e) {
       setError(e);
     }

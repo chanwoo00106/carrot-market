@@ -17,23 +17,21 @@ async function handler(
   req: NextApiRequest,
   res: NextApiResponse<ResponseType>
 ) {
-  const s3 = Aws.getS3();
-
-  if (!process.env.AWS_BUCKET) return res.status(500).json({ ok: false });
+  /* const s3 = Aws.getS3(); */
+  /**/
+  /* if (!process.env.AWS_BUCKET) return res.status(500).json({ ok: false }); */
+  /**/
+  /* const param: AWS.S3.Types.PutObjectRequest = { */
+  /*   Bucket: process.env.AWS_BUCKET, */
+  /*   Key: v1(), */
+  /*   Body: "", */
+  /*   ACL: "public-read", */
+  /*   ContentType: "", */
+  /* }; */
+  /**/
+  /* const result = await s3.upload(param).promise(); */
 
   console.log(req.body);
-
-  const param: AWS.S3.Types.PutObjectRequest = {
-    Bucket: process.env.AWS_BUCKET,
-    Key: v1(),
-    Body: req.body,
-    ACL: "public-read",
-    ContentType: "",
-  };
-
-  const result = await s3.upload(param).promise();
-
-  console.log(result);
 
   return res.status(200).json({ ok: true, url: "" });
 }

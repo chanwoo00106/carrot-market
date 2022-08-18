@@ -2,32 +2,29 @@ import { NextPage } from "next";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import { useForm } from "react-hook-form";
-<<<<<<< HEAD
 import { useEffect, useState } from "react";
 import { cls, useMutation } from "@libs/index";
-=======
-import { useEffect } from "react";
-import { useMutation } from "@libs/index";
->>>>>>> parent of 93d171d (Add image preview)
 
 interface EditProfileForm {
   name?: string;
   email?: string;
   phone?: string;
   formErrors?: string;
+  avatar?: FileList;
 }
 
 const EditProfile: NextPage = () => {
   const { user } = useUser();
+  const [preview, setPreview] = useState<string>();
   const {
     register,
     setValue,
     handleSubmit,
     setError,
     formState: { errors },
+    watch,
   } = useForm<EditProfileForm>();
   const [editProfile, { data, loading }] = useMutation(`/api/users/me`);
-  const [upload] = useMutation(`/api/file`);
 
   useEffect(() => {
     setValue("email", user?.email || "");
@@ -35,35 +32,14 @@ const EditProfile: NextPage = () => {
     setValue("name", user?.name || "");
   }, [user, setValue]);
 
-<<<<<<< HEAD
-  const onValid = async ({ name, email, phone, avatar }: EditProfileForm) => {
-=======
-  const onValid = ({ name, email, phone }: EditProfileForm) => {
->>>>>>> parent of 93d171d (Add image preview)
+  const onValid = ({ name, email, phone, avatar }: EditProfileForm) => {
     if (loading) return;
     if (!email && !phone)
       return setError("formErrors", {
         message: "Email OR Phone number are required. You need to choose one.",
       });
 
-<<<<<<< HEAD
-    if (avatar) {
-      const form = new FormData();
-      form.append("avatar", avatar[0]);
-
-      upload(form, true);
-    }
-
-    /* if (!avatar || !avatar.length) { */
-    /*   editProfile({ name, email, phone }); */
-    /*   return; */
-    /* } */
-    /**/
-    /**/
-    /* editProfile({ name, email, phone, avatarUrl: "" }); */
-=======
-    editProfile({ name, email, phone });
->>>>>>> parent of 93d171d (Add image preview)
+    editProfile({ name, email, phone, avatar });
   };
 
   useEffect(() => {
@@ -71,17 +47,31 @@ const EditProfile: NextPage = () => {
       setError("formErrors", { message: data.error });
   }, [data, setError]);
 
+  const avatar = watch("avatar");
+
+  useEffect(() => {
+    if (!avatar || !avatar.length) return;
+    setPreview(URL.createObjectURL(avatar[0]));
+  }, [avatar]);
+
   return (
     <Layout canGoBack>
       <form onSubmit={handleSubmit(onValid)} className="py-10 px-4 space-y-4">
         <div className="flex items-center space-x-3">
-          <div className="w-14 h-14 rounded-full bg-slate-500" />
+          <img
+            src={preview}
+            className={cls(
+              "w-14 h-14 rounded-full",
+              !preview && "bg-slate-500"
+            )}
+          />
           <label
             htmlFor="picture"
             className="cursor-pointer py-2 px-3 border border-gray-300 rounded-md shadow-sm text-sm font-medium focus:ring-2 focus:ring-offset-2 focus:ring-orange-500 text-gray-700"
           >
             Change
             <input
+              {...register("avatar")}
               id="picture"
               type="file"
               className="hidden"

@@ -25,6 +25,7 @@ const EditProfile: NextPage = () => {
     watch,
   } = useForm<EditProfileForm>();
   const [editProfile, { data, loading }] = useMutation(`/api/users/me`);
+  const [upload] = useMutation(`/api/file`);
 
   useEffect(() => {
     setValue("email", user?.email || "");
@@ -39,12 +40,20 @@ const EditProfile: NextPage = () => {
         message: "Email OR Phone number are required. You need to choose one.",
       });
 
-    if (!avatar || !avatar.length) {
-      editProfile({ name, email, phone });
-      return;
+    if (avatar) {
+      const form = new FormData();
+      form.append("avatar", avatar[0]);
+
+      upload(form, true);
     }
 
-    editProfile({ name, email, phone, avatarUrl: "" });
+    /* if (!avatar || !avatar.length) { */
+    /*   editProfile({ name, email, phone }); */
+    /*   return; */
+    /* } */
+    /**/
+    /**/
+    /* editProfile({ name, email, phone, avatarUrl: "" }); */
   };
 
   useEffect(() => {

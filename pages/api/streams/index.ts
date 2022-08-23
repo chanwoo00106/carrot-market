@@ -27,6 +27,9 @@ async function handler(
         price: +price,
         description,
         user: { connect: { id: user?.id } },
+        cloudflareId: "어쩌구",
+        cloudflareKey: "저쩌구",
+        cloudflareUrl: "으아아아",
       },
     });
 

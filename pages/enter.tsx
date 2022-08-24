@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { cls, useMutation } from "@libs/index";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 // import Bs from "@components/Bs";
 
-const Bs = dynamic(() => import("@components/Bs"));
+const Bs = dynamic(
+  () =>
+    new Promise((resolve) =>
+      setTimeout(() => resolve(import("@components/Bs")), 10000)
+    ),
+  { ssr: false, suspense: true, loading: <span>Loading</span> }
+);
 
 interface EnterForm {
   email?: string;
@@ -137,7 +143,9 @@ export default function Enter() {
                 ) : null}
                 {method === "phone" ? (
                   <>
-                    <Bs />
+                    <Suspense fallback="Loading something big">
+                      <Bs />
+                    </Suspense>
                     <div className="flex rounded-md shadow-sm ">
                       <span className="flex items-center justify-center px-3 rounded-l-md border border-r-0 border-gray-300 bg-gray-50 text-gray-500 select-none text-sm">
                         +82

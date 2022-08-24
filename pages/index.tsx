@@ -1,4 +1,4 @@
-import type { NextPage } from "next";
+import type { GetServerSideProps, NextPage } from "next";
 import Layout from "@components/layout";
 import useUser from "@libs/client/useUser";
 import Link from "next/link";
@@ -16,8 +16,17 @@ interface ProductsResponse {
   products: ProductWithCount[];
 }
 
-const Home: NextPage = () => {
-  const {} = useUser();
+export const getServerSideProps: GetServerSideProps = async () => {
+  const products = await client?.product.findMany({});
+  return {
+    props: {
+      products,
+    },
+  };
+};
+
+const Home: NextPage<{ products: Product[] }> = ({ products }) => {
+  console.log(products);
   const { data } = useSWR<ProductsResponse>("/api/products");
 
   return (

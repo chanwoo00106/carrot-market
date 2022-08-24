@@ -20,14 +20,14 @@ function MyApp({ Component, pageProps }: AppProps) {
       <Script
         src="https://connect.facebook.net/en_US/sdk.js"
         onLoad={() => {
-          window.fbAsyncInit = function () {
-            FB.init({
-              appId: "your-app-id",
-              autoLogAppEvents: true,
-              xfbml: true,
-              version: "v13.0",
-            });
-          };
+          // window.fbAsyncInit = function () {
+          //   FB.init({
+          //     appId: "your-app-id",
+          //     autoLogAppEvents: true,
+          //     xfbml: true,
+          //     version: "v13.0",
+          //   });
+          // };
         }}
       />
     </SWRConfig>

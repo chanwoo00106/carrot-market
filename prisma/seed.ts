@@ -7,6 +7,9 @@ async function main() {
     await client.stream.create({
       data: {
         name: item + "",
+        cloudflareId: "",
+        cloudflareKey: "",
+        cloudflareUrl: "",
         description: item + "",
         price: item,
         user: {

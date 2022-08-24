@@ -29,7 +29,7 @@ const Create: NextPage = () => {
   };
 
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle="create stream">
       <form onSubmit={handleSubmit(onValid)} className="space-y-4 py-10 px-4">
         <div>
           <label

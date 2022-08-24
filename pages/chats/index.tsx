@@ -3,7 +3,7 @@ import Layout from "../../components/layout";
 
 const Chats: NextPage = () => {
   return (
-    <Layout title="채팅" hasTabBar>
+    <Layout title="채팅" hasTabBar seoTitle="chats">
       <div className="px-4">
         {[1, 1, 1, 1, 1, 1, 1].map((_, i) => (
           <div

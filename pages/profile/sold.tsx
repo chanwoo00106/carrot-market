@@ -4,7 +4,7 @@ import ProductList from "@components/product-list";
 
 const Sold: NextPage = () => {
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle="profile sold">
       <div className="flex flex-col space-y-5 py-10">
         <ProductList kind="sales" />
       </div>

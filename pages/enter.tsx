@@ -6,6 +6,7 @@ import dynamic from "next/dynamic";
 // import Bs from "@components/Bs";
 
 const Bs = dynamic(
+  // @ts-ignore
   () =>
     new Promise((resolve) =>
       setTimeout(() => resolve(import("@components/Bs")), 10000)

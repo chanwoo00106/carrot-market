@@ -20,7 +20,7 @@ const Profile: NextPage = () => {
   const { data } = useSWR<ReviewsResponse>("/api/reviews");
 
   return (
-    <Layout title="나의 캐럿" hasTabBar>
+    <Layout title="나의 캐럿" hasTabBar seoTitle="profile">
       <div className="px-4">
         <div className="flex items-center space-x-3">
           <div className="w-16 h-16 bg-slate-500 rounded-full" />

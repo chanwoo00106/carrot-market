@@ -37,7 +37,7 @@ const ItemDetail: NextPage = () => {
   };
 
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle="items detail">
       <div className="px-4 py-10">
         <div className="mb-8">
           <div className="h-96 bg-slate-300" />

@@ -1,4 +1,5 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
@@ -9,6 +10,7 @@ interface LayoutProps {
   canGoBack?: boolean;
   hasTabBar?: boolean;
   children: React.ReactNode;
+  seoTitle: string;
 }
 
 const Layout: NextPage<LayoutProps> = ({
@@ -16,6 +18,7 @@ const Layout: NextPage<LayoutProps> = ({
   canGoBack,
   hasTabBar,
   children,
+  seoTitle,
 }) => {
   const router = useRouter();
 
@@ -23,6 +26,9 @@ const Layout: NextPage<LayoutProps> = ({
 
   return (
     <div>
+      <Head>
+        <title>{seoTitle} | CarrotMarket</title>
+      </Head>
       <div
         className={cls(
           !canGoBack && "justify-center",

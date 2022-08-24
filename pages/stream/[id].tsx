@@ -5,7 +5,6 @@ import { Stream } from "@prisma/client";
 import produce from "immer";
 import { NextPage } from "next";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import useSWR from "swr";
 
@@ -39,7 +38,7 @@ const StreamDetail: NextPage = () => {
     router.query.id ? `/api/streams/${router.query.id}` : null,
     { refreshInterval: 1000 }
   );
-  const [sendMessage, { loading, data: sendMessageData }] = useMutation(
+  const [sendMessage, { loading }] = useMutation(
     `/api/streams/${router.query.id}/messages`
   );
 
@@ -60,7 +59,7 @@ const StreamDetail: NextPage = () => {
   };
 
   return (
-    <Layout canGoBack>
+    <Layout canGoBack seoTitle="stream detail">
       <div className="py-10 px-4  space-y-4">
         <div className="w-full rounded-md shadow-sm bg-slate-300 aspect-video" />
         <div className="mt-5">

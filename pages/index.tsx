@@ -1,9 +1,9 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Layout from "@components/layout";
-import useUser from "@libs/client/useUser";
 import Link from "next/link";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
+import client from "@libs/server/client";
 
 export interface ProductWithCount extends Product {
   _count: {
@@ -18,9 +18,10 @@ interface ProductsResponse {
 
 export const getServerSideProps: GetServerSideProps = async () => {
   const products = await client?.product.findMany({});
+  console.log(products[0]);
   return {
     props: {
-      products,
+      products: JSON.parse(JSON.stringify(products)),
     },
   };
 };

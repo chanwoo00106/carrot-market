@@ -1,7 +1,7 @@
 import type { GetServerSideProps, NextPage } from "next";
 import Layout from "@components/layout";
 import Link from "next/link";
-import useSWR from "swr";
+import useSWR, { SWRConfig } from "swr";
 import { Product } from "@prisma/client";
 import client from "@libs/server/client";
 
@@ -16,18 +16,7 @@ interface ProductsResponse {
   products: ProductWithCount[];
 }
 
-export const getServerSideProps: GetServerSideProps = async () => {
-  const products = await client?.product.findMany({});
-  console.log(products[0]);
-  return {
-    props: {
-      products: JSON.parse(JSON.stringify(products)),
-    },
-  };
-};
-
-const Home: NextPage<{ products: Product[] }> = ({ products }) => {
-  console.log(products);
+const Home: NextPage = () => {
   const { data } = useSWR<ProductsResponse>("/api/products");
 
   return (
@@ -64,7 +53,7 @@ const Home: NextPage<{ products: Product[] }> = ({ products }) => {
                         d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
                       ></path>
                     </svg>
-                    <span>{product._count.favs}</span>
+                    <span>{product._count.favs || 0}</span>
                   </div>
                   <div className="flex space-x-0.5 items-center text-sm text-gray-600">
                     <svg
@@ -114,4 +103,39 @@ const Home: NextPage<{ products: Product[] }> = ({ products }) => {
   );
 };
 
-export default Home;
+export const getServerSideProps: GetServerSideProps = async () => {
+  const products = await client?.product.findMany({
+    include: {
+      _count: {
+        select: {
+          favs: true,
+        },
+      },
+    },
+  });
+
+  return {
+    props: {
+      products: JSON.parse(JSON.stringify(products)),
+    },
+  };
+};
+
+const Page: NextPage<{ products: ProductWithCount }> = ({ products }) => {
+  return (
+    <SWRConfig
+      value={{
+        fallback: {
+          "/api/products": {
+            ok: true,
+            products,
+          },
+        },
+      }}
+    >
+      <Home />
+    </SWRConfig>
+  );
+};
+
+export default Page;

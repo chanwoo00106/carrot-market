@@ -18,12 +18,10 @@ interface MutationResult {
 
 export default function Enter() {
   const router = useRouter();
-  const [enter, { loading, data, error }] =
+  const [enter, { loading, data }] =
     useMutation<MutationResult>("/api/users/enter");
-  const [
-    confirmToken,
-    { loading: tokenLoading, data: tokenData, error: tokenError },
-  ] = useMutation<MutationResult>("/api/users/confirm");
+  const [confirmToken, { loading: tokenLoading, data: tokenData }] =
+    useMutation<MutationResult>("/api/users/confirm");
 
   const { register, reset, handleSubmit } = useForm<EnterForm>();
   const { register: tokenRegister, handleSubmit: tokenHandleSubmit } =

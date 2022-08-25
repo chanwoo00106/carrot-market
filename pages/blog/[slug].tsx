@@ -6,7 +6,7 @@ import remarkParse from "remark-parse/lib";
 import { unified } from "unified";
 
 const Post: NextPage<{ post: string }> = ({ post }) => {
-  return <h1>{post}</h1>;
+  return <div dangerouslySetInnerHTML={{ __html: post }} />;
 };
 
 export const getStaticPaths: GetStaticPaths = () => {

@@ -32,6 +32,8 @@ async function handler(
       },
     });
 
+    await res.revalidate("/comunity");
+
     return res.status(200).json({ ok: true, post });
   } else {
     const {

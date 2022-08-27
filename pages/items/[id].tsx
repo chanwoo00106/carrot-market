@@ -1,11 +1,12 @@
 import Button from "@components/Button";
-import type { NextPage } from "next";
+import type { NextPage, GetStaticProps, GetStaticPaths } from "next";
 import Layout from "@components/layout";
 import { useRouter } from "next/router";
 import useSWR from "swr";
 import { Product } from "@prisma/client";
 import Link from "next/link";
 import { cls, useMutation } from "@libs/index";
+import client from "@libs/server/client";
 
 interface UserAndProduct extends Product {
   user: {
@@ -16,13 +17,16 @@ interface UserAndProduct extends Product {
 }
 
 interface ItemDetailResponse {
-  ok: boolean;
   product: UserAndProduct;
   isLiked: boolean;
   relatedProducts: Product[];
 }
 
-const ItemDetail: NextPage = () => {
+const ItemDetail: NextPage<ItemDetailResponse> = ({
+  product,
+  relatedProducts,
+  isLiked,
+}) => {
   const router = useRouter();
   const { data, mutate } = useSWR<ItemDetailResponse>(
     router.query.id && `/api/products/${router.query.id}`
@@ -33,7 +37,7 @@ const ItemDetail: NextPage = () => {
   const onFavClick = async () => {
     await toggleFav();
     if (!data) return;
-    mutate({ ...data, isLiked: !data?.isLiked }, false);
+    mutate({ ...data, isLiked: !isLiked }, false);
   };
 
   return (
@@ -45,9 +49,9 @@ const ItemDetail: NextPage = () => {
             <div className="w-12 h-12 rounded-full bg-slate-300" />
             <div>
               <p className="text-sm font-medium text-gray-700">
-                {data?.product?.user?.name}
+                {product?.user?.name}
               </p>
-              <Link href={`user/profiles/${data?.product?.user?.id}`}>
+              <Link href={`user/profiles/${product?.user?.id}`}>
                 <a className="text-xs font-medium text-gray-500">
                   View profile &rarr;
                 </a>
@@ -55,14 +59,12 @@ const ItemDetail: NextPage = () => {
             </div>
           </div>
           <div className="mt-5">
-            <h1 className="text-3xl font-bold text-gray-900">
-              {data?.product.name}
-            </h1>
+            <h1 className="text-3xl font-bold text-gray-900">{product.name}</h1>
             <p className="text-3xl block mt-3 text-gray-900">
-              ${data?.product.price}
+              ${product.price}
             </p>
             <p className="text-base my-6 text-gray-700">
-              {data?.product.description}
+              {product.description}
             </p>
             <div className="flex items-center justify-between space-x-2">
               <Button>Talk to seller</Button>
@@ -70,12 +72,12 @@ const ItemDetail: NextPage = () => {
                 onClick={onFavClick}
                 className={cls(
                   "p-3 rounded-md flex items-center justify-center hover:bg-gray-100",
-                  data?.isLiked
+                  isLiked
                     ? "text-red-400 hover:text-red-500"
                     : "text-gray-400 hover:text-gray-500"
                 )}
               >
-                {data?.isLiked ? (
+                {isLiked ? (
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-5 w-5"
@@ -114,7 +116,7 @@ const ItemDetail: NextPage = () => {
             Similar items
           </h2>
           <div className="mt-6 grid grid-cols-2 gap-4">
-            {data?.relatedProducts?.map((product) => (
+            {relatedProducts?.map((product) => (
               <div key={product.id}>
                 <div className="h-56 w-full bg-slate-300" />
                 <h3 className="text-sm text-gray-700 -mb-1">{product.name}</h3>
@@ -128,6 +130,57 @@ const ItemDetail: NextPage = () => {
       </div>
     </Layout>
   );
+};
+
+export const getStaticPaths: GetStaticPaths = async () => {
+  return {
+    paths: [],
+    fallback: "blocking",
+  };
+};
+
+export const getStaticProps: GetStaticProps = async (ctx) => {
+  if (!ctx.params?.id) {
+    return { props: {} };
+  }
+
+  const product = await client.product.findUnique({
+    where: { id: +ctx.params.id.toString() },
+    include: {
+      user: { select: { id: true, name: true, avatar: true } },
+    },
+  });
+
+  const terms = product?.name.split(" ").map((word) => ({
+    name: {
+      contains: word,
+    },
+  }));
+
+  const relatedProducts = await client.product.findMany({
+    where: {
+      OR: terms,
+      AND: {
+        id: { not: +ctx.params.id.toString() },
+      },
+    },
+  });
+
+  const isLiked = Boolean(
+    await client.fav.findFirst({
+      where: {
+        productId: product?.id,
+      },
+    })
+  );
+
+  return {
+    props: {
+      product: JSON.parse(JSON.stringify(product)),
+      relatedProducts: JSON.parse(JSON.stringify(relatedProducts)),
+      isLiked,
+    },
+  };
 };
 
 export default ItemDetail;
